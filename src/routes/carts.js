@@ -1,34 +1,59 @@
 import { Router } from "express";
+import CartsManager from '../CartsManager.js'
 
 const router = Router();
 
+const cartManager = new CartsManager('./Carrito.json')
 
-const carts = [
-    {
-        name: "rocio",
-        course: "la chica que"
-
-}
-];
-
-/*get devuelve los productos */
-router.get('/', (req, res) => {
-    res.send(carts);
-});
-
-/*crea un producto de acuerdo al valor que se le pase req */
-router.post('/api/carts', (req, res) => {
-    const cart = {
-        name: req.body.name ?? "sin nombre",
-        course: req.body.course ?? "si curso"
+//crear un carts
+router.post('/', async(req,res) => {
+    try {
+        await cartManager.addCart(req.body)
+        res.status(200).json({message: 'Carrito agregado'})
+    } catch (error) {
+        res.status(500).json({error: 'Error al agregar al carrito'})
     }
+})
 
-    carts.push(cart);
+router.post('/:cid/product/:pid', async (req, res) => {
+   
+    try{
+        console.log(cartManager)
+        const {cid, pid} = req.params
+        if(cartManager) {
+            const newProductAdded = await cartManager.addProductToCart(+cid, +pid);
+            res.status(200).json({message: 'Product agregado al carrito', product: newProductAdded})
 
-    /*estatus de creacion de producto */
-    res.status(201).send('viajera por el mundo desde cart');
+        } else {
+            res.status(200).json({message: 'cart no encontrado'});
+        }
     
-});
+    } catch (error) {
+        res.status(500).json({message: "Error al agregar product a carts"})
+    }
+})
 
+//carrito
+router.get('/', async (req, res) => {
+    try {
+        const carts = await cartManager.getCarts();
+        return res.status(200).send({status: 200, cart: carts});
+    } catch (error) {
+        res.sendStatus(404).send({ ststus: 404, error: error.message})
+    }
+})
+
+
+//carrito por id
+router.get('/:cid', async(req, res) => {
+        try {
+            const cid = parseInt(req.params.cid);
+        const cartId = await cartManager.getCartsById(cid)
+        res.status(200).json({message: 'cart por id', cartId})
+    } catch (error) {
+        res.status(500).json({error})
+    }
+})
 
 export default router;
+

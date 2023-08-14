@@ -1,26 +1,18 @@
 [
 	{
-		"Id": 1,
-		"Name": "Sin Nombre",
-		"LastName": "Sin Apellido",
-		"Age": "Sin Edad"
+		"id": 1,
+		"title": "taza lol",
+		"description": "lastico",
+		"code": "010",
+		"price": 4500,
+		"stock": "5"
 	},
 	{
-		"Id": 2,
-		"Name": "Sin Nombre",
-		"LastName": "Sin Apellido",
-		"Age": "Sin Edad"
-	},
-	{
-		"Id": 3,
-		"LastName": "Sin Apellido",
-		"Name": "Sin Nombre",
-		"Age": "Sin Edad"
-	},
-	{
-		"Id": 4,
-		"LastName": "Sin Apellido",
-		"Name": "Sin Nombre",
-		"Age": "Sin Edad"
+		"id": 2,
+		"title": "taza lol",
+		"description": "lao",
+		"code": "010",
+		"price": 4500,
+		"stock": "5"
 	}
 ]
