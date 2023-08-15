@@ -56,23 +56,6 @@ class ProductManager {
         }
     }
 
-    /*//actualizar productos por id
-    async updateProduct (id, obj) {
-        try {
-            const productList = await this.getProducts()
-            const productIndex = productList.findIndex(p => p.id === id)
-            if (productIndex === -1) {
-                return 'No se encontro el producto con ese id'
-            }
-            const product = productList[productIndex]
-            productList[productIndex] = { ...product, ...obj }
-            await fs.promises.writeFile(this.path, JSON.stringify(productList))
-            
-        } catch (error) {
-            throw new Error("error al actualizar id")
-        }
-    }*/
-
     //eliminar productos por id
     async deleteProduct (id) {
         try {
