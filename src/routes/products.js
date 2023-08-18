@@ -49,24 +49,8 @@ router.put('/:pid', async (req,res) => {
             res.status(200).json({ message: 'Producto actualizado con éxito', product: updatedProduct });
         } else {
             res.status(404).json({ message: 'Producto no encontrado' });
-        }}
-    /*try {
-        const pid = req.params.pid;
-        const changes = req.body;
-
-        const prodToChange = await PM.getProductById(pid);
-
-        if (prodToChange) {
-            const updatedProduct = { ...prodToChange, ...cambiarObjeto };
-            await productos.deleteProduct(pid);
-            await productos.save(updatedProduct);
-
-            res.status(200).json({ message: 'Producto actualizado con éxito', product: updatedProduct });
-        const result = await PM.updateProduct(pid, changes)
-        
-        res.status(200).json({message:'Product actualizado correctamente', changes})
-    
-    }*/ catch (error){
+        }
+    } catch (error){
         res.status(500).json({error})
     }
 });

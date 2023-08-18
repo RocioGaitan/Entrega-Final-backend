@@ -9,15 +9,11 @@ class ProductManager {
     //Metodo para leer todos los productos y devolver un array
     async getProducts() {
         try {
-            if(fs.existsSync(this.path)) {
-                const products = await fs.promises.readFile(this.path, "utf-8");
+            const products = await fs.promises.readFile(this.path, "utf-8");
+            return products ? JSON.parse(products) : []
             
-              return JSON.parse(products);
-            } else {
-                return [];
-            }
         } catch (error) {
-            return error    
+            return []
         }
     }
 

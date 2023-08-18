@@ -1,18 +1,26 @@
 [
 	{
 		"id": 1,
-		"title": "taza lol",
-		"description": "lastico",
-		"code": "010",
-		"price": 4500,
-		"stock": "5"
+		"title": "taza homero js",
+		"description": "taza de ceramica",
+		"code": "001",
+		"price": 2500,
+		"stock": "4"
 	},
 	{
 		"id": 2,
-		"title": "taza lol",
-		"description": "lao",
-		"code": "010",
-		"price": 4500,
-		"stock": "5"
+		"title": "taza lunares",
+		"description": "taza de ceramica y plastico",
+		"code": "004",
+		"price": 2000,
+		"stock": "3"
+	},
+	{
+		"id": 3,
+		"title": "taza negra",
+		"description": "taza plastico",
+		"code": "005",
+		"price": 2400,
+		"stock": "2"
 	}
 ]

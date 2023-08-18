@@ -1,16 +1,29 @@
-/*instanciar el socket y guardarlo en la const*/
 const socket = io();
 
-socket.emit('message', 'hola desde un websocket');
-
-socket.on('message', data=>{
-    console.log(data);
-})
+const productList = document.getElementById('productList');
 
 
-socket.on('evento', data=>{
-    console.log(data);
-})
+
+socket.on('connection', () => {
+    console.log('connection establecida');
+});
+
+socket.on('updateProducts', (products) => {
+    renderProduct(products);
+    console.log('Productos actualizados', products);
+});
+
+
+
+function renderProduct(products) {
+    productList.innerHTML = '';
+    products.forEach((product) => {
+        const li = document.createElement('li');
+        li.textContent = `${product.title} - ${product.code} - ${product.price} - ${product.stock}`;
+        productList.appendChild(li);
+        
+    });
+}
 
 
 
