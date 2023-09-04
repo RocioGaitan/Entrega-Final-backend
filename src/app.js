@@ -6,7 +6,11 @@ import routerProducts from './routes/products.js';
 import routerCarts from './routes/carts.js';
 
 import { Server } from 'socket.io';
-import ProductManager from './ProductManager.js';
+import ProductManager from './dao/ProductManager.js';
+
+import mongoose from 'mongoose';
+const uri = 'mongodb://127.0.0.1:27017/ecomerce'
+mongoose.connect(uri);
 
 const managerProduct = new ProductManager('./Products.json');
 
@@ -39,7 +43,8 @@ app.use('/api/carts', routerCarts);
 app.get('/realTimeProducts', (req, res) => {
     res.render('realTimeProducts', {
         title: "titulo",
-        style: "index.css"
+        style: "index.css",
+        
     });
 });
 

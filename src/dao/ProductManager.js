@@ -11,8 +11,9 @@ class ProductManager {
         try {
             const products = await fs.promises.readFile(this.path, "utf-8");
             return products ? JSON.parse(products) : []
-            
+            /*return JSON.parse(products) */
         } catch (error) {
+            console.error(error.message);
             return []
         }
     }
@@ -30,7 +31,7 @@ class ProductManager {
         products.push(newProduct);
 
         try {
-            await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+            await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t")); //convierte el JSON en string y tabulacion
 
             return newProduct;
         } catch(e) {

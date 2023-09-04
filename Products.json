@@ -22,5 +22,13 @@
 		"code": "005",
 		"price": 2400,
 		"stock": "2"
+	},
+	{
+		"id": 4,
+		"title": "taza homero y marge",
+		"description": "taza ceramica",
+		"code": "015",
+		"price": 3400,
+		"stock": "1"
 	}
 ]
