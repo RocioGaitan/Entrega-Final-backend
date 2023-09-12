@@ -3,9 +3,9 @@ import { productModel } from "../dao/models/productSchema.js";
 
 class ProductManagerDB {
     
-    constructor(path) {
+    /*constructor(path) {
         this.path = path;
-    }
+    }*/
     
     //Metodo para leer todos los productos y devolver un array
     async getProducts() {
@@ -31,12 +31,13 @@ class ProductManagerDB {
             description,
             code,
             price,
+            //status: true
             stock
         }
 
         try{
             const result = await productModel.create(newProduct);
-            return 'producto creado corrrectamente';
+            return 'producto creado corrrectamente', result;
         
         } catch(error) {
             console.log(error.message);

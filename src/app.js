@@ -2,17 +2,22 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 import _dirname from './utils.js';
+
 import routerProducts from './routes/products.js';
-import routerCarts from './routes/carts.js';
+import routerCarts from './routes/cartsDB.js';
 
 import { Server } from 'socket.io';
-import ProductManager from './dao/ProductManager.js';
+//import ProductManager from './dao/ProductManager.js';
+//import CartsManager from './dao/CartsManager.js';
+import { ProductManagerDB } from './dao/productManagerDB.js';
+import { CartsManagerDB } from './dao/cartsManagerDB.js';
 
 import mongoose from 'mongoose';
-const uri = 'mongodb://127.0.0.1:27017/ecomerce'
+const uri = 'mongodb://127.0.0.1:27017/ecommerce'
 mongoose.connect(uri);
 
-const managerProduct = new ProductManager('./Products.json');
+const managerProduct = new ProductManagerDB('path');
+const managerCart = new CartsManagerDB('path');
 
 //ejemplo para que se conserve la data
 const app = express();
@@ -40,6 +45,8 @@ app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
 
 //ruta para renderizar realTimeProducts.handlebars
+
+
 app.get('/realTimeProducts', (req, res) => {
     res.render('realTimeProducts', {
         title: "titulo",
