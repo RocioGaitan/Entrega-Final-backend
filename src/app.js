@@ -12,12 +12,15 @@ import { Server } from 'socket.io';
 import { ProductManagerDB } from './dao/productManagerDB.js';
 import { CartsManagerDB } from './dao/cartsManagerDB.js';
 
+import session from 'express-session';
+import sessionRouter from './routes/sessionRouter.js';
+
 import mongoose from 'mongoose';
 const uri = 'mongodb://127.0.0.1:27017/ecommerce'
 mongoose.connect(uri);
 
 const managerProduct = new ProductManagerDB('path');
-const managerCart = new CartsManagerDB('path');
+const cartsManagerDB = new CartsManagerDB('path');
 
 //ejemplo para que se conserve la data
 const app = express();
@@ -44,9 +47,20 @@ app.use(express.urlencoded({extended: true}));
 app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
 
+
+//session examples
+app.use(session(
+    {
+        secret: 'secretPharse',
+        resave: true,
+        saveUninitialized: true
+    }
+));
+
+app.use('/session', sessionRouter);
+
+
 //ruta para renderizar realTimeProducts.handlebars
-
-
 app.get('/realTimeProducts', (req, res) => {
     res.render('realTimeProducts', {
         title: "titulo",

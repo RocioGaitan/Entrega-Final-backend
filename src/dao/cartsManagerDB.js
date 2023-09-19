@@ -1,14 +1,15 @@
 import { cartModel } from "./models/cartsSchema.js";
-import { ProductManagerDB } from "./productManagerDB.js";
+//import { ProductManagerDB } from "./productManagerDB.js";
 
 
 export class CartsManagerDB{
     constructor(path) {
         this.path = path;
+        this.cartItems = [];
     }
     
       async getCartById(cartId) {
-        return await ProductManagerDB.findById(cartId);
+        return await cartModel.findById(cartId);
       }
     
       async removeProductFromCart(cart, productId) {
@@ -55,7 +56,7 @@ export class CartsManagerDB{
             await newCart.save();
             return newCart;
         } catch (error) {
-            throw new Error('error al agregar un carrito');
+            throw new Error('Error al agregar un carrito');
         }
     }
     
