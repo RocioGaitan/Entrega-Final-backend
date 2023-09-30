@@ -41,7 +41,7 @@ class ProductManagerDB {
         
         } catch(error) {
             console.log(error.message);
-            throw new Error('error al crear product');
+            return 'Error al crear product'
 
         }
 
@@ -53,7 +53,7 @@ class ProductManagerDB {
             const product = await productModel.findById(id);
 
             if (!product) {
-                throw new Error('Producto no encontrado');
+                return 'Producto no encontrado'
             } 
     
             //actualizar el producto existente con los nuevos datos
@@ -77,7 +77,7 @@ class ProductManagerDB {
 
         }
         catch(error) {
-            throw new error("error al eliminar el id")
+            return "Error al eliminar el id"
         }
     }
 
@@ -90,7 +90,7 @@ class ProductManagerDB {
            }
            return result;
         } catch (error) {
-           throw new error('Error al eliminar product por id');
+           return 'Error al eliminar product por id'
         }
     }
 

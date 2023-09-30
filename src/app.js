@@ -5,25 +5,22 @@ import _dirname from './utils.js';
 
 import routerProducts from './routes/products.js';
 import routerCarts from './routes/cartsDB.js';
-
-import { Server } from 'socket.io';
-//import ProductManager from './dao/ProductManager.js';
-//import CartsManager from './dao/CartsManager.js';
 import { ProductManagerDB } from './dao/productManagerDB.js';
-import { CartsManagerDB } from './dao/cartsManagerDB.js';
 
 import session from 'express-session';
 import sessionRouter from './routes/sessionRouter.js';
 
+import { Server } from 'socket.io';
 import mongoose from 'mongoose';
-const uri = 'mongodb://127.0.0.1:27017/ecommerce'
-mongoose.connect(uri);
+export const messages = [];
 
-const managerProduct = new ProductManagerDB('path');
-const cartsManagerDB = new CartsManagerDB('path');
+const uri = 'mongodb://127.0.0.1:27017/ecommercegaitan'
+mongoose.connect(uri);
 
 //ejemplo para que se conserve la data
 const app = express();
+
+const product = new ProductManagerDB();
 
 const httpServer = app.listen(8080, ()=> console.log('Servidor arriba en el puerto 8080'));
 
@@ -62,16 +59,36 @@ app.use('/session', sessionRouter);
 
 //ruta para renderizar realTimeProducts.handlebars
 app.get('/realTimeProducts', (req, res) => {
+    const productList = product.getProducts();
     res.render('realTimeProducts', {
         title: "titulo",
         style: "index.css",
+        productList: productList
         
     });
 });
 
+
+/*const PORT = 8080;
+app.listen(PORT, () => {
+    console.log(`start server in PORT ${PORT}`);
+});*/
+
 socketServer.on('connection', async(socket) => {
    
-    const products = await managerProduct.getProducts();
+    const products = await product.getProducts();
     socket.emit('updateProducts', products);       
-        
+     
+    socket.on('message', data => {
+        socketServer.emit('messageShow', data);
+    });
+
+    socket.on('chatMessage', data => {
+        console.log(data);
+        messages.push({
+            socketId: socket.id,
+            message: data,
+        });
+        socketServer.emit('chatMessage', messages);
+    });
 });
