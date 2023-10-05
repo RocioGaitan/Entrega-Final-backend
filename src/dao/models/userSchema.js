@@ -1,8 +1,14 @@
 import mongoose from "mongoose";
 
+const userCollection = 'users';
 
 const userSchema = new mongoose.Schema({
-    name: {
+    first_name: {
+        type: String,
+        index: true,
+        required: true
+    },
+    last_name: {
         type: String,
         required: true
     },
@@ -10,11 +16,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    password: {
+    gender: {
         type: String,
         required: true
     }
 });
 
 
-export const productModel = mongoose.model(userSchema)
+export const userModel = mongoose.model(userCollection, userSchema);

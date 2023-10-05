@@ -5,6 +5,7 @@ import _dirname from './utils.js';
 
 import routerProducts from './routes/products.js';
 import routerCarts from './routes/cartsDB.js';
+import routerUser from './routes/userRouter.js';
 import { ProductManagerDB } from './dao/productManagerDB.js';
 
 import session from 'express-session';
@@ -14,7 +15,8 @@ import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 export const messages = [];
 
-const uri = 'mongodb://127.0.0.1:27017/ecommercegaitan'
+//const uri = 'mongodb://127.0.0.1:27017/ecommercegaitan'
+const uri = 'mongodb+srv://rociogaitan98rg:pRPAqndZAM5ZizsC@cluster0.zcivoyu.mongodb.net/?retryWrites=true&w=majority'
 mongoose.connect(uri);
 
 //ejemplo para que se conserve la data
@@ -43,6 +45,7 @@ app.use(express.urlencoded({extended: true}));
 //usar routers-rutas
 app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
+app.use('/api/users', routerUser);
 
 
 //session examples
