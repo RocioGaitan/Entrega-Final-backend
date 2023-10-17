@@ -1,13 +1,11 @@
 import { Router } from "express";
 import { userModel } from "../dao/models/userSchema.js";
-import _dirname from "../utils.js";
-import fs from 'fs';
 
 const router = Router();
 
 router.get('/', async (req, res) => {
     try{
-        const users = await userModel.find();
+        const users = await userModel.find().populate('carts.cart');
         res.send({
             status: 'success',
             payload: users
@@ -22,14 +20,14 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/search', async (req, res) => {
+/*router.get('/search', async (req, res) => {
     try {
         const { first_name } = req.query;
         if (!first_name) {
-            throw new Error('Insert filter param');
+            throw new Error('Inserta un parametro');
         }
         
-        const users = await userModel.find({ first_name}).explain('executionStats');
+        const users = await userModel.find({ first_name}).populate('carts.cart');
 
         res.send({
             status: 'success',
@@ -42,7 +40,8 @@ router.get('/search', async (req, res) => {
             message: error.message
         });
     }
-});
+});*/
+
 
 router.post('/', async (req, res) => {
     const {first_name, last_name, email, gender} = req.body;
@@ -57,7 +56,7 @@ router.post('/', async (req, res) => {
     } catch (error) {
         res.status(400).send({
             status: 'error',
-            message: error.message.replace(/"/g, "")
+            message: error.message.replace(/"/g, "'")
         });
     }
 });
@@ -68,18 +67,25 @@ router.put('/:id', async (req, res) => {
     const {first_name, last_name, email, gender} = req.body;
 
     try{
-        const user = await userModel.find({_id: id});
+        const user = await userModel.findOne({_id: id});
         if(!user) {
-            throw new Error('User not found');
+            throw new Error('User no encontrado');
         }
 
-        const newUser = {
-            first_name: first_name ?? user.first_name,
-            last_name: last_name ?? user.last_name,
-            email: email ?? user.email,
-            gender: gender ?? user.gender
+        if (first_name !== undefined) {
+            user.first_name = first_name;
         }
-        const result = await userModel.updateOne({_id: id}, newUser);
+        if (last_name !== undefined) {
+            user.last_name = last_name;
+        }
+        if (email !== undefined) {
+            user.email = email;
+        }
+        if (gender !== undefined) {
+            user.gender = gender;
+        }
+
+        const result = await userModel.findByIdAndUpdate(id, user, { new: true});
 
         res.status(200).send({
             status: 'success',
@@ -88,25 +94,18 @@ router.put('/:id', async (req, res) => {
     } catch (error) {
         res.status(400).send({
             status: 'error',
-            message: error.message.replace(/"/g,"")
+            message: error.message.replace(/"/g,"'")
         });
     }
 });
 
+router.delete('/:id', async (req, res) => {
 
-
-router.post('/insertAll', async (req, res) => {
+    const id = req.params.id;
 
     try {
-        if (!req.body.passphrase || req.body.passphrase != 'CoderHouse2023') {
-            throw new Error('This action is not permitted');
-        }
-
-        const users = fs.readFileSync(`${__dirname}/../database/Users.json`, "utf8");
-
-        const result = await userModel.insertMany(JSON.parse(users));
-    
-        res.status(201).send({
+        const result = await userModel.deleteOne({_id: id});
+        res.status(200).send({
             status: 'success',
             payload: result
         });
@@ -117,5 +116,6 @@ router.post('/insertAll', async (req, res) => {
         });
     }
 });
+
 
 export default router;

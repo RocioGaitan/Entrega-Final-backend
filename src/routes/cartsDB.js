@@ -1,13 +1,125 @@
-import express from "express";
-import { CartsManagerDB } from "../dao/cartsManagerDB.js";
-import router from "./products.js";
+import { Router } from "express";
+import {cartModel} from '../dao/models/cartSchema.js';
+
+const router = Router();
+
+router.get('/', async (req, res) => {
+  try {
+      const carts = await cartModel.find().populate('products.product');
+      res.status(200).json({ status: 'success', payload: carts });
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).send({
+          status: 'error',
+          message: error.message
+      });
+  }
+});
+
+router.get('/:uid', async (req, res) => {
+  try {
+      const uid = req.params.uid;
+
+      
+      const cart = await cartModel.findById({ _id: uid }).populate('product.products');
+      res.send({
+          status: 'success',
+          payload: cart
+      });
+      
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).send({
+          status: 'error',
+          message: error.message
+      });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { products } = req.body;
+
+  try {
+    const cart = await cartModel(id);
+
+    if (!cart) {
+      return res.status(404).json({ status: 'error', error: 'Carrito no encontrado' });
+    }
+    
+    cart.products = products;
+    const updatedCart = await cart.save();
+
+    res.json({ status: 'success', payload: updatedCart });
+  } catch (error) {
+    res.status(500).json({ status: 'error', error: 'Error al actualizar el carrito' });
+  }
+});
+
+router.post('/', async (req, res) => {
+
+  const {last_name, email, products} = req.body;
+
+  try {
+      const result = await cartModel.create({last_name, email, products});
+  
+      res.status(201).send({
+          status: 'success',
+          payload: result
+      });
+  } catch (error) {
+      res.status(400).send({
+          status: 'error',
+          message: error.message.replace(/"/g, "'")
+      });
+  }
+});
+
+
+router.delete('/:pid', async (req, res) => {
+  const { id, pid } = req.params;
+
+  try {
+    const cart = await cartModel.findById(id);
+
+    if (!cart) {
+      return res.status(404).json({ status: 'error', error: 'Carrito no encontrado' });
+    }
+
+    cart.products = cart.products.filter(product => product !== pid);
+    const updatedCart = await cart.save();
+
+    res.json({ status: 'success', payload: updatedCart });
+  } catch (error) {
+    res.status(500).json({ status: 'error', error: 'Error al eliminar producto del carrito' });
+  }
+});
+
+export default router;
+
+/* Trae el carrito completo
+router.get('/:cid', async (req, res) => {
+  const { cid } = req.params;
+
+  try {
+    const cart = await cartsModel.find(cid);
+
+    if (!cart) {
+      return res.status(404).json({ status: 'error', error: 'Carrito no encontrado' });
+    }
+
+    res.json({ status: 'success', payload: cart });
+  } catch (error) {
+    res.status(500).json({ status: 'error', error: 'Error al obtener el carrito completo' });
+  }
+});
 
 // Elimina un producto del carrito
 router.delete('/:cid/products/:pid', async (req, res) => {
     const { cid, pid } = req.params;
   
     try {
-      const cart = await CartsManagerDB.getCartById(cid);
+      const cart = await cartsModel.find(cid);
   
       if (!cart) {
         return res.status(404).json({ status: 'error', error: 'Carrito no encontrado' });
@@ -61,24 +173,6 @@ router.put('/:cid/products/:pid', async (req, res) => {
     }
   });
 
-  
-  // Trae el carrito completo
-  router.get('/:cid', async (req, res) => {
-    const { cid } = req.params;
-  
-    try {
-      const cart = await CartsManagerDB.getCartWithProducts(cid);
-  
-      if (!cart) {
-        return res.status(404).json({ status: 'error', error: 'Carrito no encontrado' });
-      }
-  
-      res.json({ status: 'success', payload: cart });
-    } catch (error) {
-      res.status(500).json({ status: 'error', error: 'Error al obtener el carrito completo' });
-    }
-  });
-
 
 //crear un nuevo carrito
 router.post('/', async (req, res) => {
@@ -94,7 +188,7 @@ router.post('/', async (req, res) => {
 
 
 
-/*obtener carrito por ID
+obtener carrito por ID
 router.get('/:id', async (req, res) => {
     const {id} = req.params;
     try{
@@ -141,5 +235,3 @@ router.put('/:cartId/products/:productId', async (req, res) => {
     }
   });*/
 
-
-export default router;

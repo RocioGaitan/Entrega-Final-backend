@@ -19,8 +19,21 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         required: true
+    },
+    carts: {
+        type: [
+            {
+                cart: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "carts"
+                }
+            }
+        ],
+        default: []
     }
 });
+
+
 
 
 export const userModel = mongoose.model(userCollection, userSchema);

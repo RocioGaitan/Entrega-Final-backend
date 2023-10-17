@@ -16,9 +16,11 @@ import mongoose from 'mongoose';
 export const messages = [];
 
 //const uri = 'mongodb://127.0.0.1:27017/ecommercegaitan'
-const uri = 'mongodb+srv://rociogaitan98rg:pRPAqndZAM5ZizsC@cluster0.zcivoyu.mongodb.net/?retryWrites=true&w=majority'
-mongoose.connect(uri);
+const uri = 'mongodb+srv://rociogaitan98rg:pRPAqndZAM5ZizsC@cluster0.zcivoyu.mongodb.net/ecommerce?retryWrites=true&w=majority'
 
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.log('Error connecting to MongoDB', err));
 //ejemplo para que se conserve la data
 const app = express();
 

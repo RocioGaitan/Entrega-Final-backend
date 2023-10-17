@@ -16,6 +16,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    
     price: {
         type: String,
         required: true
@@ -23,7 +24,8 @@ const productSchema = new mongoose.Schema({
     stock: {
         type: String,
         required: true
-    }
+    },
+    
 });
 
 export const productModel = mongoose.model(productColection, productSchema);

@@ -1,12 +1,11 @@
 import { Router } from "express";
 
-import { ProductManagerDB } from "../dao/productManagerDB.js";
+import { productModel } from "../dao/models/productSchema.js";
 
 const router = Router();
 
-const ProductManager = new ProductManagerDB('./Products.json');
 
-router.get('/', async (req, res) => {
+/*router.get('/', async (req, res) => {
     try {
       const { limit = 10, page = 1, sort, query } = req.query;
   
@@ -29,74 +28,103 @@ router.get('/', async (req, res) => {
       }
   
       // Realizar la consulta a la base de datos con las opciones
-      const products = await ProductManager.getProducts(options);
-
       
+      
+      const products = await productModel.find({}, null, options);
   
       res.json(products);
     } catch (error) {
       res.status(500).json({ error: 'Error al obtener productos' });
     }
-  });
+  });*/
 
-
-
-/*cargar todos los productos
-router.get('/', async (req, res) => {
-     const products = await ProductManager.getProducts();
-     res.send(products);
-    
-});*/
-
-/*router.get('/', (req, res) => {
-    res.render(
-        'index',
-        {
-            title: 'ecommerce',
-            style: 'index.css',
-            products: ProductManager
-        }
-    )
-});*/
-
-
-//buscar producto por id
-router.get('/:pid', async(req, res)=>{
-    const {pid} = req.params;
+  router.get('/', async (req, res) => {
     try {
-        const productById = await ProductManager.getProductById(pid)
-        res.status(200).json({message:'Products especifico por su id', productById})
-    } catch (error){
-        res.status(500).json({error: error.message})
+        const uid = req.query.uid;
+
+        //const products = await productModel.find({ _id: uid }).populate('carts.cart');
+        const products = await productModel.find(uid);
+
+        if(!products) {
+            return res.status(404).send({
+                status: 'error',
+                message: 'Product no encontrado'
+            });
+        }
+        
+        res.send({
+            status: 'success',
+            payload: products
+        });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send({
+            status: 'error',
+            message: error.message
+        });
     }
-})
+});
 
 //crear un producto
-router.post('/', async(req,res) => {
+router.post('/', async (req,res) => {
     try {
-        const newProduct = req.body;
-        await ProductManager.addProduct(newProduct);
-        res.status(200).json({message: 'Product agregado correctamente', product: newProduct});
-    } catch (error) {
-        res.status(500).json({error})
+        const { title, description, code, price, stock } = req.body;
+
+        const newProduct = new productModel({ 
+            title,
+            description,
+            code,
+            price,
+            stock
+        });
+
+        const saveProduct = await newProduct.save();
+
+        res.send({ 
+            status: 'success',
+            message: 'Product agregado correctamente',
+            payload: saveProduct
+        });
+    } catch (error) { 
+      console.error(error.message);
+      res.status(500).send({
+        status: 'error',
+        message: error.message
+     });
+      
     }
+   
 })
 
+
 //actualizar por id
-router.put('/:pid', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try{
-        const {pid} = req.params;
+        const {id} = req.params;
         const updateProductData = req.body; //nuevos datos
 
-        if(!updateProductData.title || !updateProductData.description || !updateProductData.price || !updateProductData.code || !updateProductData.stock) {
+        if(!updateProductData.title || 
+            !updateProductData.description ||
+             !updateProductData.price || 
+             !updateProductData.code || 
+             !updateProductData.stock) {
             res.status(404).json({message: 'faltan parametros por ingresar'});
         }
         //llamar a la funcion updateProduct
-        const updateProduct = await ProductManager.updateProduct(pid, updateProduct)
-        res.status(200).json({message: 'Product actualizado correctamente', product: updateProduct});
+        
+        const updatedProduct = await productModel.findByIdAndUpdate(id, updateProductData, {
+            new: true, // Devuelve el documento modificado
+            runValidators: true // Ejecuta las validaciones del esquema
+        });
 
+        if (!updatedProduct) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+
+        res.status(200).json({ message: 'Producto actualizado correctamente', product: updatedProduct });
     } catch (error) {
-        res.status(500).json({ error: error.message});
+        res.status(500).json({ error: error.message });
     }
     
 });
@@ -104,7 +132,7 @@ router.put('/:pid', async (req, res) => {
 //eliminar por id
 router.delete('/:pid', async(req,res) => {
     const pid = req.params
-    const result = await ProductManager.deleteProduct(pid)
+    const result = await productModel.findByIdAndDelete(pid)
 
      res.status(200).json({message:'Product eliminado', result});
     
