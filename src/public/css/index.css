@@ -10,3 +10,16 @@ li{
     padding: 1rem;
 
 }
+
+h1{
+    background-color: #7c5866;
+    color: antiquewhite;
+    width: 12rem;
+    text-align: center;
+}
+
+.botones{
+    background-color: rgb(225, 230, 230);
+    width: 10rem;
+    text-align: center;
+}

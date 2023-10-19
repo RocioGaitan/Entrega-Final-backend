@@ -7,7 +7,7 @@ const cartSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
+    Useremail: {
         type: String,
         required: true
     },
@@ -25,9 +25,16 @@ const cartSchema = new mongoose.Schema({
     
 });
 
-/*cartSchema.pre('find', () => {
-    this.populate('products.product')
-});*/
+
+cartSchema.pre(/^find/, function(next) {
+    this.populate('products.product');
+    next();
+});
 
 
 export const cartModel = mongoose.model(cartsList, cartSchema);
+
+
+/*cartSchema.pre('find', () => {
+    this.populate('products.product')
+});*/

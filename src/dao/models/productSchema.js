@@ -24,8 +24,8 @@ const productSchema = new mongoose.Schema({
     stock: {
         type: String,
         required: true
-    },
-    
+    }    
 });
+
 
 export const productModel = mongoose.model(productColection, productSchema);

@@ -14,10 +14,14 @@
     "express-handlebars": "^7.1.2",
     "express-session": "^1.17.3",
     "mongoose": "^7.5.0",
+    "mongoose-paginate-v2": "^1.7.4",
     "mongose": "^0.0.2-security",
     "multer": "^1.4.5-lts.1",
     "populate": "^5.0.1",
     "socket.io": "^4.7.2"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "handlebars": "^4.5.0"
+  }
 }

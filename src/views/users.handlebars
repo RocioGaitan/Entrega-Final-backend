@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <title>Users</title>
+</head>
+
+<body>
+    <h1>Users List</h1>
+ {{#if isValid}}
+ <div>
+      {{#each docs}}
+     <div>
+         <p>First name: {{this.first_name}} &nbsp; Last name: {{this.last_name}}</p>
+         <p>Email: {{this.email}} &nbsp; Gender: {{this.gender}} &nbsp; carts: {{this.carts}}</p>
+     </div>
+     <br/>
+      {{/each}}
+ </div>
+ <br/>
+ <div class="botones">
+     {{#if hasPrevPage}}
+        <a href={{this.prevLink}}><< Anterior</a>
+     {{/if}}
+     &nbsp;
+     {{this.page}}
+     &nbsp;
+     {{#if hasNextPage}}
+        <a href={{this.nextLink}}>Siguiente >></a>
+     {{/if}} 
+ </div>
+ {{else}}
+ <h1>No hay users para mostrar</h1>
+ {{/if}}
+
+ <script src="/socket.io/socket.io.js"></script>
+
+
+
+
+</body>
+    
+</html>
+
+
+
+ 

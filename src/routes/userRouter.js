@@ -1,53 +1,32 @@
 import { Router } from "express";
-import { userModel } from "../dao/models/userSchema.js";
+import userModel from '../dao/models/userSchema.js';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-    try{
-        const users = await userModel.find().populate('carts.cart');
-        res.send({
-            status: 'success',
-            payload: users
-        });
-        
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send({
-            status: 'error',
-            message: error.message
-        });
+router.get("/", async (req, res) => {
+    let page = parseInt(req.query.page);
+    if (!page) {
+        page = 1;
     }
+
+    let result = await userModel.paginate({}, {page, limit: 5, lean: true});
+
+    result.title = "Users";
+    result.prevLink = result.hasPrevPage?`http://localhost:8080/users?page=${result.prevPage}`:'';
+    result.nextLink = result.hasNextPage?`http://localhost:8080/users?page=${result.nextPage}`:'';
+    result.isValid= !(page<=0||page>result.totalPages)
+
+    res.render(
+        'users',
+        result
+    );
 });
 
-/*router.get('/search', async (req, res) => {
-    try {
-        const { first_name } = req.query;
-        if (!first_name) {
-            throw new Error('Inserta un parametro');
-        }
-        
-        const users = await userModel.find({ first_name}).populate('carts.cart');
-
-        res.send({
-            status: 'success',
-            payload: users
-        });
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});*/
-
-
 router.post('/', async (req, res) => {
-    const {first_name, last_name, email, gender} = req.body;
+    const {first_name, last_name, email, gender, carts} = req.body;
 
     try{
-        const result = await userModel.create({first_name, last_name, email, gender});
+        const result = await userModel.create({first_name, last_name, email, gender, carts});
 
         res.status(201).send({
             status: 'success',
@@ -64,7 +43,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
 
     const id = req.params.id;
-    const {first_name, last_name, email, gender} = req.body;
+    const {first_name, last_name, email, gender, carts} = req.body;
 
     try{
         const user = await userModel.findOne({_id: id});
@@ -83,6 +62,9 @@ router.put('/:id', async (req, res) => {
         }
         if (gender !== undefined) {
             user.gender = gender;
+        }
+        if (carts !== undefined) {
+            user.carts = carts;
         }
 
         const result = await userModel.findByIdAndUpdate(id, user, { new: true});
@@ -119,3 +101,26 @@ router.delete('/:id', async (req, res) => {
 
 
 export default router;
+
+
+/*router.get('/search', async (req, res) => {
+    try {
+        const { first_name } = req.query;
+        if (!first_name) {
+            throw new Error('Inserta un parametro');
+        }
+        
+        const users = await userModel.find({ first_name}).populate('carts.cart');
+
+        res.send({
+            status: 'success',
+            payload: users
+        });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send({
+            status: 'error',
+            message: error.message
+        });
+    }
+});*/
