@@ -6,9 +6,11 @@ import path from 'path';
 import routerProducts from './routes/products.js';
 import routerCarts from './routes/cartsDB.js';
 import routerUser from './routes/userRouter.js';
+import routerCookies from './routes/cookiesRouter.js';
 
 import session from 'express-session';
 import sessionRouter from './routes/sessionRouter.js';
+import cookieParser from 'cookie-parser';
 
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
@@ -26,10 +28,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 //ejemplo para que se conserve la data
 const app = express();
 
-
-
 const httpServer = app.listen(8080, ()=> console.log('Servidor arriba en el puerto 8080'));
-
 //servidor sockets-objeto global
 const socketServer = new Server(httpServer);
 
@@ -47,17 +46,18 @@ app.set('view engine', 'handlebars');
 app.use('/js', express.static(_dirname + '/public/js'));*/
 const publicPath = _dirname + '/public';
 app.use('/css', express.static(path.join(publicPath, 'css')));
-
-
-
 //uso de archivos JSON y permite recibir parametros dinamicos desde la url
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
 //usar routers-rutas
 app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
 app.use('/users', routerUser);
+app.use(cookieParser('cba2023'));
+app.use('/cookies', routerCookies);
+
 
 
 //session examples
