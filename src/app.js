@@ -1,8 +1,9 @@
 //importo rutas
 import express from 'express';
 import handlebars from 'express-handlebars';
-import _dirname from './utils.js';
+import _dirname from './utils/utils.js';
 import path from 'path';
+import mongoStore from 'connect-mongo';
 import routerProducts from './routes/products.js';
 import routerCarts from './routes/cartsDB.js';
 import routerUser from './routes/userRouter.js';
@@ -16,6 +17,7 @@ import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import { productModel } from './dao/models/productSchema.js';
 import userModel from './dao/models/userSchema.js';
+import MongoStore from 'connect-mongo';
 export const messages = [];
 
 //const uri = 'mongodb://127.0.0.1:27017/ecommercegaitan'
@@ -60,16 +62,27 @@ app.use('/cookies', routerCookies);
 
 
 
-//session examples
+/*session examples
 app.use(session(
     {
         secret: 'secretPharse',
         resave: true,
         saveUninitialized: true
     }
+));*/
+app.use(session(
+    {
+        store: mongoStore.create({
+            mongoUrl: 'mongodb+srv://rociogaitan98rg:pRPAqndZAM5ZizsC@cluster0.zcivoyu.mongodb.net/ecommerce?retryWrites=true&w=majority',
+            ttl: 100
+        }),
+        secret: 'secretPharse',
+        resave: true,
+        saveUninitialized: true
+    }
 ));
 
-app.use('/session', sessionRouter);
+app.use('/api/session', sessionRouter);
 
 
 //ruta para renderizar realTimeProducts.handlebars
@@ -108,6 +121,8 @@ app.get('/users', async (req, res) => {
         res.render('error', { error: 'Error al obtener la lista de usuarios' });
     }
 });
+
+
 
 
 /*const PORT = 8080;

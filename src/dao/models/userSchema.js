@@ -21,21 +21,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    carts: {
-        type: [
-            {
-                cart: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "carts"
-                }
-            }
-        ],
-        default: []
-    }
+   password: {
+    type: String,
+    require: true
+   }
 });
 
 
-userSchema.plugin(mongoosePaginate);
+userSchema.pre('create,', function(user){
+    console.log(user)
+});
 
 const userModel = mongoose.model(userCollection, userSchema);
 

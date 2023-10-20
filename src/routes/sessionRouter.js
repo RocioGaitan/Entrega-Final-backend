@@ -21,7 +21,7 @@ router.get("/logout", (req, res) => {
     });
 });
 
-router.get("/login", auth, (req, res) => {
+router.post("/login", auth, (req, res) => {
     res.send(`Login success ${req.session.user}`);
 });
 
@@ -34,5 +34,7 @@ function auth(req, res, next) {
     req.session.admin = true;
     return next();
 }
+
+
 
 export default router;
