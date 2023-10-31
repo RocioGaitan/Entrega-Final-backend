@@ -1,14 +1,16 @@
 import { Router } from "express";
 
-import { productModel } from "../dao/models/productSchema.js";
+
+import { productModel} from "../dao/models/productSchema.js";
+
 
 const router = Router();
 
   router.get('/', async (req, res) => {
     try {
-        const id = req.query.id;
+        const id = req.params.id;
 
-        const products = await productModel.find({ _id: id }).sort({ title: 1});
+        const products = await productModel.findOne({ _id: id }).sort({ title: 1});
         console.log(products);
         
         if(!products || products.length === 0) {
@@ -146,36 +148,3 @@ router.delete('/:pid', async (req, res) => {
 
 export default router;
 
-
-/*router.get('/', async (req, res) => {
-    try {
-      const { limit = 10, page = 1, sort, query } = req.query;
-  
-      // Construir el objeto de opciones de búsqueda
-      const options = {};
-  
-      // Aplicar el límite y la paginación
-      const skip = (page - 1) * limit;
-      options.limit = parseInt(limit);
-      options.skip = skip;
-  
-      // Aplicar el ordenamiento si se proporciona
-      if (sort) {
-        options.sort = { price: sort === 'asc' ? 1 : -1 };
-      }
-  
-      // Aplicar el filtro si se proporciona
-      if (query) {
-        options.query = { type: query }; // Reemplaza 'type' con el campo adecuado para el filtro
-      }
-  
-      // Realizar la consulta a la base de datos con las opciones
-      
-      
-      const products = await productModel.find({}, null, options);
-  
-      res.json(products);
-    } catch (error) {
-      res.status(500).json({ error: 'Error al obtener productos' });
-    }
-  });*/

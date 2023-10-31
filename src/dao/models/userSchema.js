@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import mongoosePaginate from 'mongoose-paginate-v2';
+
 
 const userCollection = 'users';
 
@@ -28,10 +28,20 @@ const userSchema = new mongoose.Schema({
 });
 
 
-userSchema.pre('create,', function(user){
-    console.log(user)
+userSchema.pre('save', function () {
+    console.log(this);
+})
+const userModel = mongoose.model(userCollection, userSchema);
+
+export default userModel;
+
+
+/*userSchema.pre('create', function(){
+    console.log(this.password);
 });
 
 const userModel = mongoose.model(userCollection, userSchema);
 
-export default userModel;
+export default userModel;*/
+
+//userSchema.plugin(mongoosePaginate);

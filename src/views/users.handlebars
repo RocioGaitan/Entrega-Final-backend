@@ -10,12 +10,12 @@
 
 <body>
     <h1>Users List</h1>
- {{#if isValid}}
+ {{#if users}}
  <div>
       {{#each docs}}
      <div>
          <p>First name: {{this.first_name}} &nbsp; Last name: {{this.last_name}}</p>
-         <p>Email: {{this.email}} &nbsp; Gender: {{this.gender}} &nbsp; carts: {{this.carts}}</p>
+         <p>Email: {{this.email}} &nbsp; Gender: {{this.gender}} &nbsp; Password: {{this.password}}</p>
      </div>
      <br/>
       {{/each}}
