@@ -6,20 +6,22 @@ const userCollection = 'users';
 const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
-        index: true,
-        required: true
+        minLength: 3,
+        require: true
     },
     last_name: {
         type: String,
-        required: true
+        require: true
     },
     email: {
         type: String,
-        required: true
+        minLength: 4,
+        unique: true,
+        require: true
     },
-    gender: {
-        type: String,
-        required: true
+    age: {
+        type: Number,
+        require: true
     },
    password: {
     type: String,
@@ -28,9 +30,10 @@ const userSchema = new mongoose.Schema({
 });
 
 
-userSchema.pre('save', function () {
+/*userSchema.pre('save', function () {
     console.log(this);
-})
+});*/
+
 const userModel = mongoose.model(userCollection, userSchema);
 
 export default userModel;

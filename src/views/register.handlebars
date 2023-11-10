@@ -11,21 +11,23 @@
     <label for="email">Email</label>
     <input type="email" name="email" id="email">
 
-    <label for="gender">Gender</label>
-    <input type="number" name="gender" id="gender">
+    <label for="gender">Age</label>
+    <input type="number" name="age" id="age">
 
     <label for="password">Password</label>
     <input type="password" name="password" id="password">
 
-    <button type="submit">Register</button>
+   <button type="submit">Register</button>
+    <span><a href="/login" target="_self">Register</a></span>
+   
 </form>
- <script src="/socket.io/socket.io.js"></script>
- <script src="/js/index.js"></script>
-<span><a href="/api/session/login" target="_self">Login</a></span>
-
 
 {{#if registerFailed}}
     <script type="text/javascript">
-        alert('Register Failed!');
+        alert('Register Fallido!');
     </script>
 {{/if}}
+
+ <script src="/socket.io/socket.io.js"></script>
+ <script src="/js/index.js"></script>
+

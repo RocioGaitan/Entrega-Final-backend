@@ -1,5 +1,7 @@
 //importo rutas
 import express from 'express';
+import session from 'express-session';
+import mongoose from 'mongoose';
 import handlebars from 'express-handlebars';
 import _dirname from './utils.js';
 import path from 'path';
@@ -9,18 +11,19 @@ import routerProducts from './routes/products.js';
 import routerCarts from './routes/cartsDB.js';
 import routerUser from './routes/userRouter.js';
 import routerCookies from './routes/cookiesRouter.js';
-import views from './routes/views.js';
+import routerViews from './routes/viewsRouter.js';
 
-import session from 'express-session';
+import sessionRouter from './routes/sessionRouter.js'
+
 //import sessionRouter from './routes/sessionRouter.js';
 import cookieParser from 'cookie-parser';
 
 import { Server } from 'socket.io';
-import mongoose from 'mongoose';
+
 import { productModel } from './dao/models/productSchema.js';
 import userModel from './dao/models/userSchema.js';
 
-export const messages = [];
+const app = express();
 
 //const uri = 'mongodb://127.0.0.1:27017/ecommercegaitan'
 const uri = 'mongodb+srv://rociogaitan98rg:pRPAqndZAM5ZizsC@cluster0.zcivoyu.mongodb.net/ecommerce?retryWrites=true&w=majority'
@@ -29,8 +32,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => { console.log('Error connecting to MongoDB', err)
 });
-//ejemplo para que se conserve la data
-const app = express();
+
 
 const httpServer = app.listen(8080, ()=> console.log('Servidor arriba en el puerto 8080'));
 //servidor sockets-objeto global
@@ -44,10 +46,25 @@ app.engine('handlebars', handlebars.engine({
 //se indica en que parte del proyecto estan las vistas
 const viewsPath = path.join(_dirname , 'views');
 
+//session examples
+app.use(session(
+    {
+        store: mongoStore.create({
+            mongoUrl: uri,
+            ttl: 100
+        }),
+        secret: 'secretPharse',
+        resave: false,
+        saveUninitialized: false
+    }
+));
+
 // Indica la ubicación de las vistas
 app.set('views', viewsPath);
+
 //cuando el servidor renderice debe hacerlo con el motor de handlebars
 app.set('view engine', 'handlebars');
+
 //servidor estatico de archivos
 app.use('/css', express.static(_dirname + '/public/css'));
 app.use('/js', express.static(_dirname + '/public/js'));
@@ -63,24 +80,19 @@ app.use(cookieParser());
 //usar routers-rutas
 app.use('/api/products', routerProducts);
 app.use('/api/carts', routerCarts);
+app.use('/api/users', routerUser);
 
 app.use(cookieParser('cba2023'));
 app.use('/cookies', routerCookies);
+app.use('/api/session', sessionRouter);
 
-//session examples
-app.use(session(
-    {
-        store: mongoStore.create({
-            mongoUrl: uri,
-            ttl: 100
-        }),
-        secret: 'secretPharse',
-        resave: false,
-        saveUninitialized: false
-    }
-));
+app.use('/', routerViews);
 
-app.get('/api/session/register', (req,res) => {
+
+
+
+
+/*app.get('/api/session/register', (req,res) => {
     res.render(
         'register',
         {
@@ -99,11 +111,11 @@ app.get('/api/session/login', (req, res) => {
 });
 
 //app.use('/api/session', sessionRouter);
-app.use('/api/session', routerUser);
+app.use('/api/session', routerUser);*/
 
 
 //ruta para renderizar realTimeProducts.handlebars
-app.get('/realTimeProducts', async (req, res) => {
+/*app.get('/realTimeProducts', async (req, res) => {
     
     try {
         const products = await productModel.find().lean();
@@ -121,7 +133,7 @@ app.get('/realTimeProducts', async (req, res) => {
     }
 });
 
-app.get('/users', async (req, res) => {
+/*app.get('/users', async (req, res) => {
     
     try {
         const users = await userModel.find().lean();
@@ -139,5 +151,5 @@ app.get('/users', async (req, res) => {
         console.error(error);
         res.render('error', { error: 'Error al obtener la lista de usuarios' });
     }
-});
+});*/
 

@@ -2,19 +2,24 @@
 
 <form method="post" action="/api/session/login">
 
-    <label for="email">email</label>
+    <label for="email">Email</label>
     <input type="email" name="email" id="email">
 
-    <label for="password">password</label>
+    <label for="password">Password</label>
     <input type="password" name="password" id="password">
 
     <button type="submit">Login</button>
+    
+    <!--<button> <a href="/api/realTimeProducts" target="_self">Login</a> </button>-->
+
 </form>
-<span><a href="/api/session/register" target="_self">Register</a></span>
+
+ <span><a href="/api/session/realTimeProducts" target="_self">Volver a Register</a></span>
+
 
 {{#if loginFailed}}
     <script type="text/javascript">
-        alert('Login Failed!');
+        alert('Login Fallido!');
     </script>
 {{/if}}
 

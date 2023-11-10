@@ -31,7 +31,7 @@ router.post("/login", async (req, res) => {
 
         req.session.user = respuesta.payload;
         req.session.loginFailed = false;
-        res.redirect("/");
+        res.redirect("/realTimeProducts");
 
     } catch (error) {
         req.session.loginFailed = true;

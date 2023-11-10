@@ -1,25 +1,18 @@
-import { Router } from "express";
-import userModel from "../dao/models/userSchema.js";
-import UserService from "../services/userService.js";
+import {Router} from 'express';
 
-const router = Router();
+import UserService from '../services/userService.js';
+
+
 const userS = new UserService();
-
-router.get("/users", async (req, res) => {
-    try {
-        const users = await userModel.find();
-        res.status(200).json(users);
-    } catch (error) {
-        res.status(500).json({ error: "Error al obtener usuarios" });
-    }
-});
+const router = Router();
 
 router.post("/register", async (req, res) => {
     try {
         await userS.createUser(req.body);
-        req.session.registerSuccess = true;
-      res.render("login");
-    } catch (error) {
+       req.session.registerSuccess = true;
+       res.redirect("/login");
+         } catch (error) {
+    
         req.session.registerFailed = true;
         res.redirect("/register");
     }
@@ -28,11 +21,11 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const { email, password} = req.body;
-        const respuesta = await userS.login(email, password);
-
-        req.session.user = respuesta.payload;
+        const { first_name, last_name, age} = await userS.login(email, password);
+       
+        req.session.user = { first_name, last_name, email, age };
         req.session.loginFailed = false;
-        res.redirect("/realTimeProducts");
+        res.redirect("/");
 
     } catch (error) {
         req.session.loginFailed = true;
@@ -41,27 +34,6 @@ router.post("/login", async (req, res) => {
     }
 });
 
-router.put("/users/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { first_name, last_name, email, gender } = req.body;
-        const updatedUser = await userModel.findByIdAndUpdate(id, { first_name, last_name, email, gender }, { new: true });
-        res.status(200).json(updatedUser);
-    } catch (error) {
-        res.status(500).json({ error: "Error al actualizar el usuario" });
-    }
-});
-
-// DELETE: Eliminar un usuario
-router.delete("/users/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        await userModel.findByIdAndDelete(id);
-        res.status(200).json({ message: "Usuario eliminado con éxito" });
-    } catch (error) {
-        res.status(500).json({ error: "Error al eliminar el usuario" });
-    }
-});
 
 export default router;
 
