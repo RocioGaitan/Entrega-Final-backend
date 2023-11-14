@@ -18,7 +18,7 @@ class UserService {
         try {
             const user = await userModel.find({email: email});
 
-            if (user.length > 0 && isValidPassword(password, user[0])) {
+            if (user.length > 0 && isValidPassword(user[0], password)) {
                 return user[0];
             }
             
